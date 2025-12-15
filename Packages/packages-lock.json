@@ -1,9 +1,9 @@
 {
   "dependencies": {
     "com.boxqkrtm.ide.cursor": {
-      "version": "file:E:/模型素材/DF4/script/com.unity.ide.cursor-master",
+      "version": "file:com.boxqkrtm.ide.cursor",
       "depth": 0,
-      "source": "local",
+      "source": "embedded",
       "dependencies": {
         "com.unity.test-framework": "1.1.9"
       }
