@@ -40,6 +40,10 @@ public class FPSController : PortalTraveller
     // Puzzle control
     bool disabled;
 
+    [Header("Drive Mode")]
+    public bool driveMode = false;
+    public float driveSpeed = 3f;
+    public float driveAcceleration = 0.1f;
     void Start()
     {
         cam = Camera.main;
@@ -91,15 +95,41 @@ public class FPSController : PortalTraveller
         // Movement
         // ======================
 
-        Vector2 input = new Vector2(
-            Input.GetAxisRaw("Horizontal"),
-            Input.GetAxisRaw("Vertical")
-        );
+        Vector2 input;
+
+        if (driveMode)
+        {
+            // 只允许前进
+            input = new Vector2(0f, 1f);
+
+            // W 加速
+            if (Input.GetKey(KeyCode.W))
+            {
+                driveSpeed += driveAcceleration;
+            }
+
+            // S 减速
+            if (Input.GetKey(KeyCode.S))
+            {
+                driveSpeed -= driveAcceleration;
+            }
+
+            // 防止负速度
+            driveSpeed = Mathf.Max(0f, driveSpeed);
+        }
+        else
+        {
+            input = new Vector2(
+                Input.GetAxisRaw("Horizontal"),
+                Input.GetAxisRaw("Vertical")
+            );
+        }
 
         Vector3 inputDir = new Vector3(input.x, 0, input.y).normalized;
         Vector3 worldInputDir = transform.TransformDirection(inputDir);
 
-        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+        float currentSpeed = driveMode ? driveSpeed :
+        (Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed);
         Vector3 targetVelocity = worldInputDir * currentSpeed;
         velocity = Vector3.SmoothDamp(velocity, targetVelocity, ref smoothV, smoothMoveTime);
 
@@ -130,8 +160,14 @@ public class FPSController : PortalTraveller
         // Look
         // ======================
 
-        float mX = Input.GetAxisRaw("Mouse X");
-        float mY = Input.GetAxisRaw("Mouse Y");
+        float mX = 0f;
+        float mY = 0f;
+
+        if (!driveMode)
+        {
+            mX = Input.GetAxisRaw("Mouse X");
+            mY = Input.GetAxisRaw("Mouse Y");
+        }
 
         // Gross hack to prevent camera snap at start
         float mMag = Mathf.Sqrt(mX * mX + mY * mY);
@@ -204,5 +240,34 @@ public class FPSController : PortalTraveller
     public void EnablePlayer()
     {
         disabled = false;
+    }
+
+    public void EnterDriveMode(Transform driveForward)
+    {
+        // ========= 1. 计算“正确的前方方向”（只管水平） =========
+        Vector3 forward = -driveForward.forward;
+        forward.y = 0f;
+
+        if (forward.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRot = Quaternion.LookRotation(forward);
+
+            // ========= 2. 对齐玩家本体 =========
+            transform.rotation = targetRot;
+
+            // ========= 3. 同步相机内部角度（非常关键） =========
+            yaw = targetRot.eulerAngles.y;
+            smoothYaw = yaw;
+        }
+
+        // ========= 4. 重置俯仰角（看正前方） =========
+        pitch = 0f;
+        smoothPitch = pitch;
+
+        // ========= 5. 初始化驾驶参数 =========
+        driveSpeed = 3f;
+
+        // ========= 6. 最后才锁视角 / 进入驾驶 =========
+        driveMode = true;
     }
 }
