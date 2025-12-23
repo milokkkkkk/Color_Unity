@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TrafficLIght : MonoBehaviour
@@ -15,16 +13,26 @@ public class TrafficLIght : MonoBehaviour
 
     private void Awake()
     {
-        // 每个红绿灯在生成 / 关卡开始时
-        // 各自随机一次状态
+        RandomizeState();
+    }
+
+
+    public void ResetLight()
+    {
+        RandomizeState();
+    }
+
+    // =========================
+    // 内部统一随机函数
+    // =========================
+    private void RandomizeState()
+    {
         currentState = Random.value > 0.5f
             ? LightState.Red
             : LightState.Green;
     }
 
-    /// <summary>
-    /// 对外只读接口
-    /// </summary>
+    // 对外只读接口（你原来就有）
     public bool IsRed()
     {
         return currentState == LightState.Red;
@@ -35,4 +43,3 @@ public class TrafficLIght : MonoBehaviour
         return currentState == LightState.Green;
     }
 }
-

@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class FPSController : PortalTraveller
 {
+    [Header("Start")]
+    public Transform gameStartPoint;
+
     [Header("Move")]
     public float walkSpeed = 3;
     public float runSpeed = 6;
@@ -209,7 +212,7 @@ public class FPSController : PortalTraveller
         transform.eulerAngles = Vector3.up * smoothYaw;
 
         velocity = toPortal.TransformVector(
-            fromPortal.InverseTransformVector(velocity)
+          fromPortal.InverseTransformVector(velocity)
         );
 
         Physics.SyncTransforms();
@@ -269,5 +272,29 @@ public class FPSController : PortalTraveller
 
         // ========= 6. 最后才锁视角 / 进入驾驶 =========
         driveMode = true;
+    }
+
+    public void GameOver()
+    {
+        // 你原本的 GameOver 逻辑
+        driveMode = false;
+        disabled = false;
+
+        velocity = Vector3.zero;
+        verticalVelocity = 0f;
+
+        controller.enabled = false;
+        transform.position = gameStartPoint.position;
+        transform.rotation = gameStartPoint.rotation;
+        controller.enabled = true;
+
+        // =========================
+        // 【新增】重置所有红绿灯
+        // =========================
+        TrafficLIght[] lights = FindObjectsOfType<TrafficLIght>();
+        foreach (var light in lights)
+        {
+            light.ResetLight();
+        }
     }
 }
