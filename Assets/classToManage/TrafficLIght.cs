@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TrafficLIght : MonoBehaviour
+public class TrafficLight : MonoBehaviour
 {
     public enum LightState
     {
@@ -8,23 +8,41 @@ public class TrafficLIght : MonoBehaviour
         Green
     }
 
-    [Header("Runtime State")]
+    [Header("State")]
     public LightState currentState;
+
+    [Header("Light Mesh")]
+    public Renderer redLightRenderer;    // Cylinder1
+    public Renderer greenLightRenderer;  // Cylinder3
+
+    [Header("Materials")]
+    public Material lightOnMat;
+    public Material lightOffMat;
 
     private void Awake()
     {
         RandomizeState();
+        UpdateVisual();
     }
 
+    // =========================
+    // 状态切换
+    // =========================
+    public void SwitchState()
+    {
+        currentState = currentState == LightState.Red
+            ? LightState.Green
+            : LightState.Red;
+
+        UpdateVisual();
+    }
 
     public void ResetLight()
     {
         RandomizeState();
+        UpdateVisual();
     }
 
-    // =========================
-    // 内部统一随机函数
-    // =========================
     private void RandomizeState()
     {
         currentState = Random.value > 0.5f
@@ -32,14 +50,24 @@ public class TrafficLIght : MonoBehaviour
             : LightState.Green;
     }
 
-    // 对外只读接口（你原来就有）
-    public bool IsRed()
+    // =========================
+    // 视觉更新
+    // =========================
+    private void UpdateVisual()
     {
-        return currentState == LightState.Red;
+        if (currentState == LightState.Red)
+        {
+            redLightRenderer.material = lightOnMat;
+            greenLightRenderer.material = lightOffMat;
+        }
+        else
+        {
+            redLightRenderer.material = lightOffMat;
+            greenLightRenderer.material = lightOnMat;
+        }
     }
 
-    public bool IsGreen()
-    {
-        return currentState == LightState.Green;
-    }
+    // 对外接口
+    public bool IsRed() => currentState == LightState.Red;
+    public bool IsGreen() => currentState == LightState.Green;
 }

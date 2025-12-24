@@ -3,7 +3,7 @@ using UnityEngine;
 public class SpeedDetect : MonoBehaviour
 {
     [Header("Reference")]
-    public TrafficLIght trafficLight;   // 父物体上的红绿灯组件
+    public TrafficLight trafficLight;   // 父物体上的红绿灯组件
 
     [Header("Green Light Rule")]
     public float minGreenSpeed = 1.5f;
@@ -44,6 +44,7 @@ public class SpeedDetect : MonoBehaviour
                 slowCount++;
 
                 Debug.Log(
+
                     $"[SpeedDetect][过慢] slowCount={slowCount}/{maxSlowCount}"
                 );
 

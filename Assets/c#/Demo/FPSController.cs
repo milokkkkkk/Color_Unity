@@ -291,7 +291,7 @@ public class FPSController : PortalTraveller
         // =========================
         // 【新增】重置所有红绿灯
         // =========================
-        TrafficLIght[] lights = FindObjectsOfType<TrafficLIght>();
+        TrafficLight[] lights = FindObjectsOfType<TrafficLight>();
         foreach (var light in lights)
         {
             light.ResetLight();
