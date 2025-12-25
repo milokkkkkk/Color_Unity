@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class DriveStartTrigger : MonoBehaviour
 {
+    public GameObject carLevelUI;
     private void OnTriggerEnter(Collider other)
     {
         FPSController player = other.GetComponent<FPSController>();
@@ -9,6 +10,11 @@ public class DriveStartTrigger : MonoBehaviour
         {
             // 把“正前方”交给玩家去对齐
             player.EnterDriveMode(transform);
+        }
+
+        if (carLevelUI != null)
+        {
+            carLevelUI.SetActive(true);
         }
     }
 }

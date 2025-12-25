@@ -47,6 +47,9 @@ public class FPSController : PortalTraveller
     public bool driveMode = false;
     public float driveSpeed = 3f;
     public float driveAcceleration = 0.1f;
+
+    [Header("UI")]
+    public CarLevelUIController carUI;
     void Start()
     {
         cam = Camera.main;
@@ -67,6 +70,11 @@ public class FPSController : PortalTraveller
 
     void Update()
     {
+        if (carUI != null && driveMode)
+        {
+            float speed = new Vector3(velocity.x, 0f, velocity.z).magnitude;
+            carUI.UpdateSpeed(speed);
+        }
         // Cursor debug
         if (Input.GetKeyDown(KeyCode.U))
         {
@@ -189,6 +197,8 @@ public class FPSController : PortalTraveller
 
         transform.eulerAngles = Vector3.up * smoothYaw;
         cam.transform.localEulerAngles = Vector3.right * smoothPitch;
+
+
     }
 
     // ======================
