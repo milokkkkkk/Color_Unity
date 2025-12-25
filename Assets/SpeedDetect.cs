@@ -28,7 +28,7 @@ public class SpeedDetect : MonoBehaviour
             if (speed > 0f)
             {
                 Debug.Log("[SpeedDetect][违规] 红灯仍在移动  GameOver");
-                player.GameOver();
+                player.GameOver(GameOverReason.RanRedLight);
             }
             else
             {
@@ -51,7 +51,7 @@ public class SpeedDetect : MonoBehaviour
                 if (slowCount >= maxSlowCount)
                 {
                     Debug.Log("[SpeedDetect][GameOver] 绿灯过慢次数达上限");
-                    player.GameOver();
+                    player.GameOver(GameOverReason.TooSlowThreeTimes);
                 }
             }
             else

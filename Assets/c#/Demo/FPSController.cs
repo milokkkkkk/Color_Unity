@@ -1,6 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
 
+public enum GameOverReason
+{
+    RanRedLight,        // 闯红灯
+    TooSlowThreeTimes   // 三次过慢
+}
+
 public class FPSController : PortalTraveller
 {
     [Header("Start")]
@@ -284,9 +290,16 @@ public class FPSController : PortalTraveller
         driveMode = true;
     }
 
-    public void GameOver()
+    public void GameOver(GameOverReason reason)
     {
-        // 你原本的 GameOver 逻辑
+        // ======================
+        // 1. 显示 GameOver UI（根据原因）
+        // ======================
+        GameOverUI.Show(GetGameOverText(reason));
+
+        // ======================
+        // 2. 重置玩家状态（你原来的逻辑）
+        // ======================
         driveMode = false;
         disabled = false;
 
@@ -298,13 +311,27 @@ public class FPSController : PortalTraveller
         transform.rotation = gameStartPoint.rotation;
         controller.enabled = true;
 
-        // =========================
-        // 【新增】重置所有红绿灯
-        // =========================
+        // ======================
+        // 3. 重置所有红绿灯
+        // ======================
         TrafficLight[] lights = FindObjectsOfType<TrafficLight>();
         foreach (var light in lights)
         {
             light.ResetLight();
+        }
+    }
+    public string GetGameOverText(GameOverReason reason)
+    {
+        switch (reason)
+        {
+            case GameOverReason.RanRedLight:
+                return "闯红灯";
+
+            case GameOverReason.TooSlowThreeTimes:
+                return "三次过慢";
+
+            default:
+                return "Game Over";
         }
     }
 }

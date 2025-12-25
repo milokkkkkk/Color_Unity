@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameOverUI : MonoBehaviour
 {
@@ -7,8 +8,8 @@ public class GameOverUI : MonoBehaviour
 
     [Header("UI Elements")]
     public GameObject root;
-    public Text titleText;
-    public Text reasonText;
+    public TMP_Text titleText;
+    public TMP_Text reasonText;
     public Button exitButton;
 
     void Awake()
